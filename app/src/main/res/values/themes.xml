@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="TLCEval.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="TLCEval.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="TLCEval.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>

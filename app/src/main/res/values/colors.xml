@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="meadow">#598234</color>
+    <color name="textOnMeadow">#FFFFFF</color>
+    <color name="iconOnMeadow">#FFFFFF</color>
+    <color name="moss">#aebd38</color>
+    <color name="textOnMoss">#000000</color>
+    <color name="iconOnMoss">#FFFFFF</color>
+    <color name="waterfall">#68829e</color>
+    <color name="textOnWaterfall">#000000</color>
+    <color name="iconOnWaterfall">#FFFFFF</color>
+    <color name="thundercloud">#505160</color>
+    <color name="textOnThundercloud">#FFFFFF</color>
+    <color name="iconOnThundercloud">#FFFFFF</color>
+
+    <color name="background_light">#fafafa</color> <!-- grey 50 -->
+    <color name="background_dark">#333333</color>
+
+    <color name="nav_bar">@color/immersive_bars</color> <!-- overridden on v29+ -->
+    <color name="immersive_bars">#99000000</color>
+    <color name="slight_overlay">#20000000</color>
+    <color name="transparent_white">#80FFFFFF</color>
+</resources>

@@ -1,0 +1,270 @@
+plugins {
+    id "com.google.protobuf" version "0.8.12"
+}
+
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlinx-serialization'
+
+apply plugin: "androidx.navigation.safeargs.kotlin"
+
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 31
+    defaultConfig {
+        applicationId "de.uni.tuebingen.tlceval"
+        minSdkVersion 22
+        targetSdkVersion 30
+        versionCode 6
+        versionName "0.3"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+
+        buildConfigField "boolean", "ENABLE_UPDATER", "false"
+
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+    }
+
+    signingConfigs {
+        release {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('keystore.properties').newDataInputStream())
+            storeFile file(properties.getProperty('store'))
+            keyAlias properties.getProperty('alias')
+            storePassword properties.getProperty('storePass')
+            keyPassword properties.getProperty('pass')
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            jniDebuggable true
+            minifyEnabled false
+            zipAlignEnabled false
+            signingConfig signingConfigs.release
+        }
+
+        release {
+            debuggable false
+            jniDebuggable false
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Keep schemas
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+        useIR = true
+        freeCompilerArgs += [
+                "-Xopt-in=kotlin.RequiresOptIn",
+                "-Xopt-in=kotlin.OptIn"]
+    }
+
+    buildFeatures {
+        compose true
+    }
+    buildToolsVersion '30.0.3'
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+    }
+}
+
+kapt {
+    correctErrorTypes = true
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'com.android.support:support-annotations:28.0.0'
+
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    // Integration with observables
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    // Integration with ViewModels
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-alpha02"
+    // TODO maybe not needed
+    implementation "androidx.activity:activity-compose:1.4.0"
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
+
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+
+    implementation "androidx.datastore:datastore:1.0.0"
+    implementation  "com.google.protobuf:protobuf-javalite:3.10.0"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+
+    def coroutine_version = '1.6.0-native-mt'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+//    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.2' // JVM dependency
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2' // JVM dependency
+
+    implementation 'com.google.code.gson:gson:2.9.0'
+
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-compose:2.5.0-alpha02"
+
+    implementation 'com.google.accompanist:accompanist-permissions:0.14.0'
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.14.0"
+    implementation "com.google.accompanist:accompanist-insets:0.14.0"
+    implementation "com.google.accompanist:accompanist-insets-ui:0.14.0"
+
+    def koin_version = "3.1.2"
+    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin_version"
+    // Koin for Jetpack WorkManager
+    implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
+    // Koin for Jetpack Compose
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
+
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    implementation("io.coil-kt:coil:1.3.0")
+    implementation("io.coil-kt:coil-compose:1.3.0")
+
+    def camerax_version = "1.1.0-beta01"
+    def camerax_view_version = "1.1.0-beta01"
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+    implementation "androidx.camera:camera-core:$camerax_version"
+    implementation "androidx.camera:camera-camera2:$camerax_version"
+    implementation "androidx.camera:camera-view:$camerax_view_version"
+
+    def futures_version = "1.1.0"
+    implementation "androidx.concurrent:concurrent-futures:$futures_version"
+
+    def lifecycle_version = "2.5.0-alpha02"
+    def arch_version = "2.1.0"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+
+    def lifecycle_ktx_version = "2.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_ktx_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_ktx_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_ktx_version"
+    implementation "androidx.lifecycle:lifecycle-service:$lifecycle_version"
+
+    def transition_version = "1.4.1"
+    implementation "androidx.transition:transition:$transition_version"
+
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    implementation "androidx.exifinterface:exifinterface:1.3.3"
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.10.0"
+    }
+
+    // Generates the java Protobuf-lite code for the Protobufs in this project. See
+    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
+    // for more information.
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
+def rustBasePath = "../rust"
+def archTriplets = [
+        'armeabi-v7a': 'armv7-linux-androideabi',
+        'arm64-v8a': 'aarch64-linux-android',
+        'x86': 'i686-linux-android',
+        'x86_64': 'x86_64-linux-android',
+]
+
+archTriplets.each { arch, target ->
+    // Build with cargo
+    tasks.create(name: "cargo-build-${arch}", type: Exec, description: "Building core for ${arch}") {
+        doFirst {
+            if (file("${rustBasePath}/target/${target}/release/libtlc_jni.so").exists()) { throw new StopExecutionException() }
+        }
+        workingDir rustBasePath
+        commandLine 'cross', 'build', "--package=tlc_jni", "--target=${target}", '--release'
+    }
+    // Sync shared native dependencies
+    tasks.create(name: "sync-rust-deps-${arch}", type: Sync, dependsOn: "cargo-build-${arch}") {
+        from "${rustBasePath}/target/${target}/release"
+        include "*.so"
+        into "src/main/jniLibs/${arch}"
+    }
+    // Copy build libs into this app's libs directory
+    tasks.create(name: "rust-deploy-${arch}", type: Copy, dependsOn: "cargo-build-${arch}", description: "Copy rust libs for (${arch}) to jniLibs") {
+        from "${rustBasePath}/target/${target}/release"
+        include "*.so"
+        into "src/main/jniLibs/${arch}"
+    }
+    // And for java deps
+    tasks.create(name: "sync-java-deps-${arch}", type: Sync, dependsOn: "rust-deploy-${arch}") {
+        from "${rustBasePath}/target"
+        include "*.java"
+        into "src/main/java/de/uni/tuebingen/tlceval/ni"
+    }
+    tasks.create(name: "deploy-java-deps-${arch}", type: Copy, dependsOn: "sync-java-deps-${arch}") {
+        from "${rustBasePath}/target"
+        include "*.java"
+        into "src/main/java/de/uni/tuebingen/tlceval/ni"
+    }
+    // Hook up tasks to execute before building java
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn "deploy-java-deps-${arch}"
+    }
+    preBuild.dependsOn "deploy-java-deps-${arch}"
+
+    // Hook up clean tasks
+    tasks.create(name: "clean-${arch}", type: Delete, description: "Deleting built libs for ${arch}", dependsOn: "cargo-output-dir-${arch}") {
+        delete fileTree("${rustBasePath}/target/${target}/release") {
+            include '*.so'
+        }
+        delete fileTree("${rustBasePath}/target/${target}") {
+            include '*.java'
+        }
+        delete fileTree("src/main/jniLibs/${arch}") {
+            include '*.so'
+        }
+        delete fileTree("src/main/java/de/uni/tuebingen/tlceval/ni") {
+            include '*.java'
+        }
+    }
+    clean.dependsOn "clean-${arch}"
+}
+// ANCHOR_END:cargo

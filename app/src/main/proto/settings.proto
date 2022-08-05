@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "de.uni.tuebingen.tlceval";
+option java_multiple_files = true;
+
+message GallerySettings {
+    bool show_list = 1;
+    enum SortType {
+        AGENT_NAME = 0;
+        DATE = 1;
+    }
+    SortType sort_type = 2;
+    bool ascending = 3;
+}
+
+message CaptureSettings{
+    bool do_not_ask_again = 1;
+}

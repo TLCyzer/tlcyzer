@@ -1,0 +1,14 @@
+use crate::TlcProcessor;
+use jni_sys::*;
+
+foreign_class!(class TlcProcessor {
+    self_type TlcProcessor;
+    constructor TlcProcessor::new(path: String) -> TlcProcessor;
+    fn TlcProcessor::detect_plate(&self) -> Vec<i32>; alias detectPlate;
+    fn TlcProcessor::warp_plate(&mut self, coords: &[i32], orientation: u32) -> bool; alias warpPlate;
+    fn TlcProcessor::check_potentital_dark_blobs(&self) -> bool; alias hasPotentialDarkBlobs;
+    fn TlcProcessor::fit_background(&mut self, dark_spots: bool) -> Result<(), String>; alias fitBackground;
+    fn TlcProcessor::detect_blobs(&self) -> Result<Vec<i32>, String>; alias detectBlobs;
+    fn TlcProcessor::integrate_blobs(&mut self, blobs: &[i32], cut_off_percentage: f32) -> Result<Vec<i32>, String>; alias integrateBlobs;
+    fn TlcProcessor::fit_percentages(&self, key_percentage: &[f32]) -> Result<Vec<f32>, String>; alias fitPercentages;
+});

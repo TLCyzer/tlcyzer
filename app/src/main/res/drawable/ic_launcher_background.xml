@@ -1,0 +1,51 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="110dp"
+    android:height="110dp"
+    android:viewportWidth="110"
+    android:viewportHeight="110">
+  <path
+      android:pathData="M0,0h110v110h-110z"
+      android:fillColor="#D6E0D2"/>
+<!--  <group>-->
+<!--    <clip-path android:pathData="M0,0h110v110h-110z M 0,0"/>-->
+<!--    <path-->
+<!--        android:pathData="M58.308,-100.595l150.54,150.54l-79.903,79.903l-150.54,-150.54z"-->
+<!--        android:fillColor="#D6E0D2"/>-->
+<!--    <path-->
+<!--        android:pathData="M-0.26,1l110,110l-1.444,1.444l-110,-110z"-->
+<!--        android:strokeAlpha="0.25"-->
+<!--        android:fillAlpha="0.25">-->
+<!--      <aapt:attr name="android:fillColor">-->
+<!--        <gradient -->
+<!--            android:startY="55.999973"-->
+<!--            android:startX="54.740265"-->
+<!--            android:endY="57.443985"-->
+<!--            android:endX="53.296253"-->
+<!--            android:type="linear">-->
+<!--          <item android:offset="0" android:color="#FF000000"/>-->
+<!--          <item android:offset="0.515625" android:color="#00000000"/>-->
+<!--        </gradient>-->
+<!--      </aapt:attr>-->
+<!--    </path>-->
+<!--    <path-->
+<!--        android:pathData="M-55.024,54.976l110,-110l55.024,55.024l-110,110z"-->
+<!--        android:fillColor="#E7F2E4"/>-->
+<!--    <path-->
+<!--        android:pathData="M0,110l110,-110l2.74,2.74l-110,110z"-->
+<!--        android:strokeAlpha="0.4"-->
+<!--        android:fillAlpha="0.4">-->
+<!--      <aapt:attr name="android:fillColor">-->
+<!--        <gradient -->
+<!--            android:startY="55.000034"-->
+<!--            android:startX="54.999966"-->
+<!--            android:endY="57.74007"-->
+<!--            android:endX="57.740005"-->
+<!--            android:type="linear">-->
+<!--          <item android:offset="0" android:color="#FF000000"/>-->
+<!--          <item android:offset="0.473958" android:color="#00000000"/>-->
+<!--        </gradient>-->
+<!--      </aapt:attr>-->
+<!--    </path>-->
+<!--  </group>-->
+</vector>

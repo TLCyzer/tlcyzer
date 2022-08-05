@@ -1,0 +1,21 @@
+[package]
+name = "tlc_plate_detection"
+version = "0.0.1"
+authors = ["Mark Boss <mark.boss@uni-tuebingen.de>"]
+edition = "2018"
+
+
+[lib]
+name = "tlc_plate_detection"
+
+[dependencies]
+tlc_common = {path = "../common"}
+image = "0.23.9"
+imageproc = "0.21.0"
+nalgebra = "0.22.0"
+itertools = "0.9.0"
+log = "0.4.11"
+
+[dev-dependencies]
+pretty_assertions = "0.6.1"
+criterion = "0.3.3"

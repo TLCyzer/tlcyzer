@@ -1,0 +1,17 @@
+[package]
+name = "tlc_common"
+version = "0.0.1"
+authors = ["Mark Boss <mark.boss@uni-tuebingen.de>"]
+edition = "2018"
+
+
+[lib]
+name = "tlc_common"
+
+[dependencies]
+num = "0.3.0"
+image = "0.23.9"
+imageproc = "0.21.0"
+rexif = "0.5.0"
+nalgebra = "0.22.0"
+log = "0.4.11"

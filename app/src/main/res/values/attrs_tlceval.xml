@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TlcEval">
+        <attr name="colorAccentDark" format="color" />
+
+        <attr name="textOnPrimary" format="color" />
+        <attr name="textOnPrimaryDark" format="color" />
+        <attr name="textOnAccent" format="color" />
+        <attr name="textOnAccentDark" format="color" />
+
+        <attr name="iconOnPrimary" format="color" />
+        <attr name="iconOnPrimaryDark" format="color" />
+        <attr name="iconOnAccent" format="color" />
+        <attr name="iconOnAccentDark" format="color" />
+    </declare-styleable>
+    
+</resources>

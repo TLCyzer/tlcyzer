@@ -1,0 +1,14 @@
+[workspace]
+members = [
+    "common",
+    "plate_detection",
+    "plate_extractor",
+    "background_removal",
+    "blob_detection",
+    "blob_integration",
+    "reference_percent_fitter",
+    "jni"
+]
+
+[profile.release]
+lto = true

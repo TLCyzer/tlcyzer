@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">TLCyzer</string>
+    <string name="toolbar_name">Tlcyzer</string>
+    <string name="unknown_substance">Non-specified</string>
+    <string name="unknown_date">Unknown Date</string>
+    <string name="reference_percentage">Reference Percentage</string>
+    <string name="percentage">Percentage</string>
+    <string name="reference">Reference</string>
+    <string name="dark_spots">Dark Spots</string>
+    <string name="radius">Radius</string>
+    <string name="redo_processing">Redo Processing</string>
+    <string name="close">Close</string>
+    <string name="drug_name_hint">Drug Name</string>
+    <string name="title_activity_capture">CaptureActivity</string>
+</resources>
