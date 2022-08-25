@@ -5,9 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import de.uni.tuebingen.tlceval.features.processor.spot.Circle
 
@@ -30,12 +33,16 @@ class BlobSetterView @JvmOverloads constructor(
 
     private var vCircles: MutableMap<Int, Pair<PointF, Float>> = mutableMapOf()
     private var selectedCircle: Int? = null
+    private var movableCircle: Int? = null
     var selectionListener: BlobSelection? = null
 
     private var maxDistanceAllowed: Int = 0
 
     private var strokeWidth: Int = 0
     private var defaultSpotSize: Int = 0
+
+    val longPressHandler = Handler(Looper.getMainLooper())
+    var mLongPressed = Runnable { movableCircle = selectedCircle }
 
     fun setDefaultSpotSize(value: Int) {
         defaultSpotSize = value
@@ -163,6 +170,11 @@ class BlobSetterView @JvmOverloads constructor(
                     if (selectedId != null) {
                         selectedCircle = selectedId
                         selectionListener?.selected(selectedId)
+
+                        longPressHandler.postDelayed(mLongPressed,
+                            ViewConfiguration.getLongPressTimeout().toLong()
+                        )
+
                         invalidate()
                     } else {
                         if (selectedCircle != null) {
@@ -176,18 +188,26 @@ class BlobSetterView @JvmOverloads constructor(
             }
             MotionEvent.ACTION_MOVE -> {
                 // We need to have something selected
-                if (selectedCircle != null) { // TODO: only if touched for a specific time
-                    val touchPoint = PointF(event.x, event.y)
-                    val sTouchPoint = viewToSourceCoord(touchPoint)!!
-                    val touchedId = findClosestsCircle(sTouchPoint)
+                if (selectedCircle != null) {
+                    if (movableCircle != null) {
+                        val touchPoint = PointF(event.x, event.y)
+                        val sTouchPoint = viewToSourceCoord(touchPoint)!!
+                        val touchedId = findClosestsCircle(sTouchPoint)
 
-                    //Make sure that we are touching the correct blob
-                    if (touchedId == selectedCircle) {
-                        consumed = true
-                        selectionListener?.moved(sTouchPoint.x.toInt(), sTouchPoint.y.toInt())
+                        //Make sure that we are touching the correct blob
+                        if (touchedId == selectedCircle && touchedId == movableCircle) {
+                            consumed = true
+                            selectionListener?.moved(sTouchPoint.x.toInt(), sTouchPoint.y.toInt())
+                        }
                     }
+                } else {
+                    longPressHandler.removeCallbacks(mLongPressed)
+                    movableCircle = null
                 }
-
+            }
+            MotionEvent.ACTION_UP -> {
+                longPressHandler.removeCallbacks(mLongPressed)
+                movableCircle = null
 
             }
         }
