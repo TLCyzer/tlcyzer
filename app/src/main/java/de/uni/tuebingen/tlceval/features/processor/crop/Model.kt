@@ -35,10 +35,11 @@ class CropModel(val timestamp: Long, val captureDao: CaptureDao, val rectDao: Re
         return withContext(Dispatchers.IO) {
             val maybeCapture = captureDao.findByTimestamp(timestamp)
 
-            // TODO: Restoring does not work perfectly
+
             val captureRect = captureDao.loadRectByTimestamps(longArrayOf(timestamp))
             if (captureRect.isNotEmpty()) {
-                rect = captureRect.first().rect
+                // TODO: Restoring does not work perfectly
+                // rect = captureRect.first().rect
 
                 for (entry in captureRect) {
                     entry.rect?.let { rectDao.delete(it) }
