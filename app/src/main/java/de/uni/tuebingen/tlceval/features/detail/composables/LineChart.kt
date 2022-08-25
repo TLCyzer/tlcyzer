@@ -31,7 +31,7 @@ fun List<Pair<Int, Float>>.toLineData(name: String): LineDataSet {
     return LineDataSet(entries.sortedBy { it.x }, name)
 }
 
-fun LineDataSet.toLineData(context: Context): LineData {
+fun LineDataSet.toLineData(context: Context, min: Int = 50, max: Int = 120): LineData {
     Timber.d("$this")
     this.lineWidth = 1.75f
     this.circleRadius = 5f
@@ -43,6 +43,12 @@ fun LineDataSet.toLineData(context: Context): LineData {
     val formatter = object : ValueFormatter() {
         override fun getPointLabel(entry: Entry?): String {
             if (entry != null) {
+                if (entry.y > max) {
+                    return ">${max}%"
+                }
+                if (entry.y < min) {
+                    return "<${min}%"
+                }
                 return "${entry.y.roundToInt()}%"
             }
             return super.getPointLabel(entry)
