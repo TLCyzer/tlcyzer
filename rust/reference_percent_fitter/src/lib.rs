@@ -39,15 +39,19 @@ impl ReferencePercentFitter {
         println!("{:?}", reg_data);
 
         // And fit the model
-        let model = FormulaRegressionBuilder::new()
+        let fitted = FormulaRegressionBuilder::new()
             .data(&reg_data)
             .formula(formula)
             .fit_without_statistics()
             .expect("Formula could not be evaluated!");
 
+        // Get the intercept and parameters
+        let intercept = fitted[0];
+        let parameters: Vec<_> = fitted.iter().cloned().skip(1).collect();
+
         ReferencePercentFitter {
-            parameters: model.regressor_values,
-            intercept: model.intercept_value,
+            parameters,
+            intercept,
         }
     }
 

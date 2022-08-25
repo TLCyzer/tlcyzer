@@ -48,7 +48,7 @@ impl BackgroundFitter {
     }
 
     pub fn has_potential_dark_blobs(&self) -> bool {
-        let rgb = self.input.to_rgb();
+        let rgb = self.input.to_rgb8();
 
         let c_hist = imageproc::stats::cumulative_histogram(&rgb);
 
@@ -66,7 +66,7 @@ impl BackgroundFitter {
         debug!("{:?}", self.input.dimensions());
         match &self.background_fit {
             Ok(bf) => {
-                let gray = self.input.to_luma().convert();
+                let gray = self.input.to_luma8().convert();
 
                 // Both images are in f64
                 let img = if blobs_dark { gray.invert() } else { gray };
@@ -143,7 +143,7 @@ impl BackgroundFitter {
     ) -> (Vec<Vec<f64>>, Vec<f64>) {
         let (width, height) = input_image.dimensions();
         debug!("Inputs: {}", width * height);
-        let gray = input_image.to_luma();
+        let gray = input_image.to_luma8();
         let mut target: Vec<f64> = Vec::new();
         let mut input: Vec<Vec<f64>> = Vec::new();
 
@@ -162,14 +162,14 @@ impl BackgroundFitter {
         let reg_data = RegressionDataBuilder::new()
             .build_from(data)
             .expect("Regression data building failed!");
-        let model = FormulaRegressionBuilder::new()
+        let fitted = FormulaRegressionBuilder::new()
             .data(&reg_data)
             .formula(formula)
-            .fit()
+            .fit_without_statistics()
             .expect("Formula could ne be evaluated!");
-        let parameters = model.parameters.regressor_values;
 
-        let intercept = model.parameters.intercept_value;
+        let intercept = fitted[0];
+        let parameters: Vec<_> = fitted.iter().cloned().skip(1).collect();
 
         (parameters, intercept)
     }

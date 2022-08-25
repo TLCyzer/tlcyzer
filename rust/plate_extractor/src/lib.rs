@@ -27,7 +27,7 @@ pub fn unwarp_crop(
         Some(projection) => {
             debug!("{:#?}", projection);
             let mut warped = imageproc::geometric_transformations::warp(
-                &image.to_rgb(),
+                &image.to_rgb8(),
                 &projection,
                 imageproc::geometric_transformations::Interpolation::Bilinear,
                 image::Rgb([0, 0, 0]),

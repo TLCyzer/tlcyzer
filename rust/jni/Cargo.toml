@@ -3,13 +3,14 @@ name = "tlc_jni"
 version = "0.1.0"
 authors = ["Mark Boss <mark.boss@uni-tuebingen.de>"]
 edition = "2018"
+build = "build.rs"
 
 [lib]
 name = "tlc_jni"
 crate-type = ["cdylib"]
 
 [dependencies]
-image = "0.23.9"
+image = "0.24.3"
 tlc_plate_detection = {path = "../plate_detection"}
 tlc_plate_extraction = {path = "../plate_extractor"}
 tlc_background_removal = {path = "../background_removal"}
@@ -20,8 +21,8 @@ tlc_reference_percent_fitter = {path = "../reference_percent_fitter"}
 jni-sys = "0.3.0"
 log = "0.4.11"
 log-panics = "2.0"
-android_logger = "0.10.1"
+android_logger = { version = "0.11.1", default-features = false }
 
 [build-dependencies]
-flapigen = "0.6.0-pre7"
-env_logger = "0.7"
+flapigen = "0.6.0-pre9"
+env_logger = "0.9"

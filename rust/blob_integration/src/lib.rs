@@ -1,5 +1,3 @@
-#![feature(clamp)]
-
 use image::{GenericImageView, GrayImage};
 use nalgebra::Point2;
 use std::collections::HashMap;

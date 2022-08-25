@@ -178,7 +178,7 @@ impl Detector {
         let min_dim = if width < height { width } else { height };
 
         // Process the image to help hough line detection
-        let grayscaled = self.detection_scale.to_luma();
+        let grayscaled = self.detection_scale.to_luma8();
 
         let contrast = imageproc::contrast::adaptive_threshold(&grayscaled, min_dim / 3);
         let canny_edge = imageproc::edges::canny(&contrast, 50.0, 100.0);
@@ -203,7 +203,7 @@ impl Detector {
         let green = image::Rgb([0, 255, 0]);
         let magenta = image::Rgb([255, 0, 255]);
 
-        let mut intersection_marked = self.detection_scale.to_rgb();
+        let mut intersection_marked = self.detection_scale.to_rgb8();
         let colors = vec![red, blue, green, magenta];
         let intersection_color = corners
             .iter()

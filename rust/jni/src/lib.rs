@@ -112,7 +112,7 @@ impl TlcProcessor {
     fn detect_blobs(&self) -> Result<Vec<i32>, String> {
         match &self.background_removed {
             Some(cleaned) => {
-                let blobs = tlc_blob_detection::detect_blobs(&cleaned.to_luma());
+                let blobs = tlc_blob_detection::detect_blobs(&cleaned.to_luma8());
                 let ret: Vec<i32> = blobs
                     .iter()
                     .map(|(k, v)| {
@@ -146,7 +146,7 @@ impl TlcProcessor {
                 }
 
                 let integrated = tlc_blob_integration::integrate_spots(
-                    &cleaned.to_luma(),
+                    &cleaned.to_luma8(),
                     &blob_map,
                     cut_off_percentage,
                 );

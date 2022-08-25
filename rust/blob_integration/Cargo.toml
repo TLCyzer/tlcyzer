@@ -10,9 +10,9 @@ name = "tlc_blob_integration"
 
 [dependencies]
 tlc_common = {path = "../common"}
-image = "0.23.9"
-nalgebra = "0.22.0"
+image = "0.24.3"
+nalgebra = "0.31.1"
 
 [dev-dependencies]
-pretty_assertions = "0.6.1"
+pretty_assertions = "1.2.1"
 criterion = "0.3.3"

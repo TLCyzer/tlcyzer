@@ -14,7 +14,7 @@ fn main() {
         )
         .use_null_annotation_from_package("androidx.annotation".into()),
     ))
-    .rustfmt_bindings(true);
+    .rustfmt_bindings(false);
 
     swig_gen.expand("android bindings", &in_src, &out_src);
     println!("cargo:rerun-if-changed={}", in_src.display());

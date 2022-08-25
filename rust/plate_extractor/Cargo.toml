@@ -10,11 +10,11 @@ name = "tlc_plate_extraction"
 
 [dependencies]
 tlc_common = {path = "../common"}
-image = "0.23.9"
-imageproc = "0.21.0"
+image = "0.24.3"
+imageproc = "0.23.0"
 log = "0.4.11"
 
 [dev-dependencies]
-pretty_assertions = "0.6.1"
+pretty_assertions = "1.2.1"
 criterion = "0.3.3"
 assert_approx_eq = "1.1.0"
