@@ -86,7 +86,7 @@ val galleryModule = module {
 val cropModule = module {
     factory { (processing_timestamp: Long) ->
         val db: CaptureDatabase = get()
-        CropModel(processing_timestamp, db.captureDao(), db.rectDao())
+        CropModel(processing_timestamp, db.captureDao(), db.rectDao(), db.spotDao())
     }
     viewModel { (processing_timestamp: Long) ->
         CropViewModel(

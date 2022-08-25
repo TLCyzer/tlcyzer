@@ -8,6 +8,7 @@ import de.uni.tuebingen.tlceval.data.Point
 import de.uni.tuebingen.tlceval.data.Rect
 import de.uni.tuebingen.tlceval.data.daos.CaptureDao
 import de.uni.tuebingen.tlceval.data.daos.RectDao
+import de.uni.tuebingen.tlceval.data.daos.SpotDao
 import de.uni.tuebingen.tlceval.di.TLC_PROCESSOR_SCOPE
 import de.uni.tuebingen.tlceval.ni.TlcProcessor
 import de.uni.tuebingen.tlceval.utils.NamingConstants.BLOBS
@@ -22,7 +23,7 @@ import timber.log.Timber
 import java.io.File
 
 
-class CropModel(val timestamp: Long, val captureDao: CaptureDao, val rectDao: RectDao) :
+class CropModel(val timestamp: Long, val captureDao: CaptureDao, val rectDao: RectDao, val spotDao: SpotDao) :
     KoinComponent {
     lateinit var currentPath: File
     private lateinit var processorScope: Scope
@@ -34,15 +35,22 @@ class CropModel(val timestamp: Long, val captureDao: CaptureDao, val rectDao: Re
         return withContext(Dispatchers.IO) {
             val maybeCapture = captureDao.findByTimestamp(timestamp)
 
-            // TODO: Restoring does not work perfectly. Disable this for now
-//            val captureRect = captureDao.loadRectByTimestamps(longArrayOf(timestamp))
-//            if (captureRect.isNotEmpty()) {
-//                rect = captureRect.first().rect
-//
-//                for (entry in captureRect) {
-//                    entry.rect?.let { rectDao.delete(it) }
-//                }
-//            }
+            // TODO: Restoring does not work perfectly
+            val captureRect = captureDao.loadRectByTimestamps(longArrayOf(timestamp))
+            if (captureRect.isNotEmpty()) {
+                rect = captureRect.first().rect
+
+                for (entry in captureRect) {
+                    entry.rect?.let { rectDao.delete(it) }
+                }
+            }
+
+            val captureSpot = captureDao.loadSpotByTimestamps(longArrayOf(timestamp))
+            if (captureSpot.isNotEmpty()) {
+                for (entry in captureSpot) {
+                    entry.spot.forEach { spotDao.delete(it) }
+                }
+            }
 
             if (maybeCapture != null) {
                 capture = maybeCapture

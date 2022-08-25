@@ -76,15 +76,16 @@ class BlobModel(val timestamp: Long, val captureDao: CaptureDao, val spotDao: Sp
         return withContext(Dispatchers.IO) {
             val maybeCapture = captureDao.findByTimestamp(timestamp)
 
-            // TODO: Restoring does not work perfectly. Disable this for now
-//            val captureSpot = captureDao.loadSpotByTimestamps(longArrayOf(timestamp))
-//            if (captureSpot.isNotEmpty()) {
+
+            val captureSpot = captureDao.loadSpotByTimestamps(longArrayOf(timestamp))
+            if (captureSpot.isNotEmpty()) {
+                // TODO: Restoring does not work perfectly. Disable this for now
 //                spots = captureSpot.first().spot
-//
-//                for (entry in captureSpot) {
-//                    entry.spot.forEach { spotDao.delete(it) }
-//                }
-//            }
+
+                for (entry in captureSpot) {
+                    entry.spot.forEach { spotDao.delete(it) }
+                }
+            }
 
             if (maybeCapture != null) {
                 capture = maybeCapture
