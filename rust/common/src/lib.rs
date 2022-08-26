@@ -1,13 +1,10 @@
 extern crate num;
 
-use image;
 use image::{DynamicImage, GrayImage, ImageBuffer, ImageResult, Luma, Pixel};
-use imageproc;
 use imageproc::map::map_pixels;
 use log::{debug, error};
 use nalgebra::Point2;
 use num::{FromPrimitive, ToPrimitive};
-use rexif;
 
 pub type HDRGrayImage = ImageBuffer<Luma<f64>, Vec<f64>>;
 
@@ -18,7 +15,7 @@ pub trait InvertGrayImage {
 impl InvertGrayImage for GrayImage {
     fn invert(&self) -> Self {
         map_pixels(self, |_x, _y, p| {
-            let mut pc = p.clone();
+            let mut pc = p;
             pc.invert();
             pc
         })
@@ -28,7 +25,7 @@ impl InvertGrayImage for GrayImage {
 impl InvertGrayImage for HDRGrayImage {
     fn invert(&self) -> Self {
         map_pixels(self, |_x, _y, p| {
-            let mut pc = p.clone();
+            let mut pc = p;
             let maxu8 = std::u8::MAX as f64;
             pc[0] = maxu8 - p[0];
             pc
@@ -115,7 +112,7 @@ impl StatsImage<Luma<u8>> for GrayImage {
     fn mean(&self) -> Luma<u8> {
         let len = self.len();
         let sum = self.pixels().fold(0u32, |sum, x| sum + x[0] as u32);
-        return Luma([(sum as f32 / len as f32) as u8]);
+        Luma([(sum as f32 / len as f32) as u8])
     }
 
     fn median(&self) -> Luma<u8> {
@@ -134,14 +131,14 @@ impl StatsImage<Luma<u8>> for GrayImage {
         let max = self
             .pixels()
             .fold(0u8, |m, x| if m <= x[0] { x[0] } else { m });
-        return Luma([max]);
+        Luma([max])
     }
 
     fn min(&self) -> Luma<u8> {
         let min = self
             .pixels()
             .fold(255u8, |m, x| if m >= x[0] { x[0] } else { m });
-        return Luma([min]);
+        Luma([min])
     }
 }
 
@@ -149,12 +146,13 @@ pub fn auto_canny(image: &GrayImage) -> GrayImage {
     let otsu_level = imageproc::contrast::otsu_level(image);
     let low_canny_threshold = (otsu_level / 2) as f32;
     let high_canny_threshold = otsu_level as f32;
-    return imageproc::edges::canny(image, low_canny_threshold, high_canny_threshold);
+    imageproc::edges::canny(image, low_canny_threshold, high_canny_threshold)
 }
 
 pub fn read_image(path: String) -> ImageResult<DynamicImage> {
     let res_image = image::open(path.clone());
-    return match res_image {
+
+    match res_image {
         Ok(image) => {
             let mut ret_image = image;
             match rexif::parse_file(&path) {
@@ -190,7 +188,7 @@ pub fn read_image(path: String) -> ImageResult<DynamicImage> {
             Ok(ret_image)
         }
         Err(err) => Err(err),
-    };
+    }
 }
 
 pub fn attenuate_generic<T: PartialOrd + FromPrimitive + ToPrimitive + std::fmt::Debug>(
@@ -203,7 +201,7 @@ pub fn attenuate_generic<T: PartialOrd + FromPrimitive + ToPrimitive + std::fmt:
     } else {
         channel
             .to_u8()
-            .expect(&format!("Conversion to u8 failed!, {:?}", channel))
+            .unwrap_or_else(|| panic!("Conversion to u8 failed!, {:?}", channel))
     }
 }
 
@@ -220,13 +218,13 @@ impl Quad {
         let width = (self.top_right.x - self.top_left.x).abs();
         let height = (self.bottom_right.y - self.top_right.y).abs();
 
-        return (width, height);
+        (width, height)
     }
 
     pub fn aspect_ratio(&self) -> f32 {
         let (width, height) = self.dimensions();
 
-        return width / height;
+        width / height
     }
 
     pub fn to_tuple_vec(&self) -> Vec<(f32, f32)> {
@@ -257,7 +255,7 @@ impl Quad {
             .map(|m| Point2::new(m[0] as f32, m[1] as f32))
             .collect();
 
-        let mut y_sorted = points.clone();
+        let mut y_sorted = points;
         y_sorted.sort_by(|a, b| a.y.partial_cmp(&b.y).unwrap());
         debug!("{:#?}", y_sorted);
 
@@ -274,10 +272,10 @@ impl Quad {
         };
 
         Quad {
-            top_left: top_left,
-            top_right: top_right,
-            bottom_right: bottom_right,
-            bottom_left: bottom_left,
+            top_left,
+            top_right,
+            bottom_right,
+            bottom_left,
         }
     }
 }
@@ -292,7 +290,7 @@ impl Circle {
     pub fn new(center_x: f32, center_y: f32, radius: f32) -> Self {
         Circle {
             center: Point2::new(center_x, center_y),
-            radius: radius,
+            radius,
         }
     }
     pub fn to_quad(&self) -> Quad {

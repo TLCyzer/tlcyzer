@@ -397,28 +397,16 @@ impl Detector {
                         (l1, averaged_corners[&l1].0),
                         (l2, averaged_corners[&l2].0),
                     ]),
-                    (true, false) => {
-                        match self.find_alternative_corner(
-                            &averaged_corners[&l1].1,
-                            to_find[l2 as usize].0,
-                        ) {
-                            Some(closest_corner) => {
-                                Some(vec![(l1, averaged_corners[&l1].0), (l2, closest_corner)])
-                            }
-                            None => None,
-                        }
-                    }
-                    (false, true) => {
-                        match self.find_alternative_corner(
-                            &averaged_corners[&l2].1,
-                            to_find[l1 as usize].0,
-                        ) {
-                            Some(closest_corner) => {
-                                Some(vec![(l1, closest_corner), (l2, averaged_corners[&l2].0)])
-                            }
-                            None => None,
-                        }
-                    }
+                    (true, false) => self
+                        .find_alternative_corner(&averaged_corners[&l1].1, to_find[l2 as usize].0)
+                        .map(|closest_corner| {
+                            vec![(l1, averaged_corners[&l1].0), (l2, closest_corner)]
+                        }),
+                    (false, true) => self
+                        .find_alternative_corner(&averaged_corners[&l2].1, to_find[l1 as usize].0)
+                        .map(|closest_corner| {
+                            vec![(l1, closest_corner), (l2, averaged_corners[&l2].0)]
+                        }),
                     (false, false) => None,
                 }
             })
@@ -455,10 +443,7 @@ impl Detector {
                             }
                         },
                     );
-                match maybe_x {
-                    Some(x) => Some(x.0),
-                    None => None,
-                }
+                maybe_x.map(|x| x.0)
             }
             None => None,
         }

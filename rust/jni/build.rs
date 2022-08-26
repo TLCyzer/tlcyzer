@@ -9,7 +9,7 @@ fn main() {
 
     let swig_gen = flapigen::Generator::new(LanguageConfig::JavaConfig(
         JavaConfig::new(
-            Path::new("..").join("target").to_path_buf(),
+            Path::new("..").join("target"),
             "de.uni.tuebingen.tlceval.ni".into(),
         )
         .use_null_annotation_from_package("androidx.annotation".into()),
