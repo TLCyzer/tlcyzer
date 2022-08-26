@@ -17,3 +17,7 @@ The regular Gradle build then automatically creates the bindings and builds the 
 For evaluating the application we provide images in the [supplementary materials](https://www.nature.com/articles/s41598-022-17527-y#Sec24), which are taken under the proposed capture setup.
 The reference spots in these images are always the left, middle, and right with 60%, 80%, and 100% respectively.
 The other remaining spots are the samples to be measured.
+
+### Instructions 
+
+The same [supplementary materials](https://www.nature.com/articles/s41598-022-17527-y#Sec24) also contain a PDF with instructions for the application on page 6 and a detailed capture box technical drawing.
