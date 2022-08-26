@@ -12,16 +12,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import de.uni.tuebingen.tlceval.R
 import de.uni.tuebingen.tlceval.data.Capture
 import de.uni.tuebingen.tlceval.data.formatTimestamp
 import java.io.File
 
 
-@ExperimentalCoilApi
 @Composable
 fun GridElement(
     capture: Capture, inSelectMode: Boolean,
@@ -47,21 +47,24 @@ fun GridElement(
             },
         elevation = 4.dp,
 
-    ) {
+        ) {
         Box() {
             Column {
                 Image(
-                    painter = rememberImagePainter(
-                        data = File(capture.path),
-                    ) {
-                        crossfade(true)
-                        fallback(R.drawable.ic_photo_placeholder)
-                    }, contentDescription = null,
+                    painter = rememberAsyncImagePainter(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(capture.path)
+                            .crossfade(true)
+                            .fallback(R.drawable.ic_photo_placeholder)
+                            .build(),
+                        contentScale = ContentScale.Crop,
+                    ),
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f, false)            // crop the image if it's not a square
-                )
+                        .aspectRatio(1f, false)
+                )// crop the image if it's not a square
                 Column(Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 12.dp)) {
                     Text(
                         text = capture.agentName ?: "Not Named",

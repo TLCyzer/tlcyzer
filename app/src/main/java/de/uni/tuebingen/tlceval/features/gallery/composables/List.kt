@@ -12,15 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import de.uni.tuebingen.tlceval.R
 import de.uni.tuebingen.tlceval.data.Capture
 import de.uni.tuebingen.tlceval.data.formatTimestamp
-import java.io.File
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ListElement(
     capture: Capture,
@@ -49,12 +48,16 @@ fun ListElement(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
             Image(
-                painter = rememberImagePainter(
-                    data = File(capture.path),
-                ) {
-                    crossfade(true)
-                    fallback(R.drawable.ic_photo_placeholder)
-                }, contentDescription = null,
+                painter =
+                rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(capture.path)
+                        .crossfade(true)
+                        .fallback(R.drawable.ic_photo_placeholder)
+                        .build(),
+                    contentScale = ContentScale.Crop
+                ),
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxHeight()

@@ -2,6 +2,7 @@ package de.uni.tuebingen.tlceval
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.activity.ComponentActivity
@@ -72,9 +73,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            val systemUiController = rememberSystemUiController()
-            val useDarkIcons = MaterialTheme.colors.isLight
-            val backgroundColor = MaterialTheme.colors.background
 
             AppTheme {
                 ProvideWindowInsets {
@@ -121,7 +119,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun handleSendImage(intent: Intent) {
-        (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let { uri ->
+        val parcelData = if (Build.VERSION.SDK_INT >= 33) {
+            intent.getParcelableExtra(Intent.EXTRA_STREAM, Parcelable::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM)
+        }
+        (parcelData as? Uri)?.let { uri ->
             // Update UI to reflect image being shared
             val capture = saveSharedImage(this, uri, outputDir)
             if (capture != null)
@@ -131,7 +135,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun handleSendMultipleImages(intent: Intent) {
-        intent.getParcelableArrayListExtra<Parcelable>(Intent.EXTRA_STREAM)?.let { uris ->
+        val parcelDataArray = if (Build.VERSION.SDK_INT >= 33) {
+            intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM, Parcelable::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableArrayListExtra<Parcelable>(Intent.EXTRA_STREAM)
+        }
+        parcelDataArray?.let { uris ->
             // Update UI to reflect multiple images being shared
             val captures: MutableList<Capture> = mutableListOf()
             for (uri in uris) {

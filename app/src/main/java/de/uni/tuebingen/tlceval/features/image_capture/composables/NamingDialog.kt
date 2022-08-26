@@ -6,21 +6,20 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import java.io.File
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 
-@ExperimentalCoilApi
 @Composable
 fun NamingDialog(
     showDialog: Boolean,
@@ -29,7 +28,7 @@ fun NamingDialog(
     imageFile: File?,
     initialName: String = "",
 ) {
-    var textState by remember  { mutableStateOf(TextFieldValue(text = initialName)) }
+    var textState by remember { mutableStateOf(TextFieldValue(text = initialName)) }
     if (showDialog && imageFile != null) {
         Dialog(
             onDismissRequest = onClose
@@ -47,9 +46,10 @@ fun NamingDialog(
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Image(
-                            painter = rememberImagePainter(
-                                data = imageFile,
-                            ) {},
+                            painter = rememberAsyncImagePainter(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(imageFile).build()
+                            ),
                             contentDescription = null,
                             modifier = Modifier
                                 .weight(1f, true)

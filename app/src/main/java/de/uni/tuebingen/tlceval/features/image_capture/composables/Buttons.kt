@@ -12,9 +12,10 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import de.uni.tuebingen.tlceval.R
 import java.io.File
@@ -44,7 +45,6 @@ fun ShutterButton(active: Boolean, doOnClick: () -> Unit) {
 
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun GalleryButton(file: File?, doOnClick: () -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -63,13 +63,14 @@ fun GalleryButton(file: File?, doOnClick: () -> Unit) {
         )
     ) {
         Image(
-            painter = rememberImagePainter(
-                data = file,
-            ) {
-                crossfade(true)
-                fallback(R.drawable.ic_photo_placeholder)
-                transformations(CircleCropTransformation())
-            },
+            painter = rememberAsyncImagePainter(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(file)
+                    .crossfade(true)
+                    .fallback(R.drawable.ic_photo_placeholder)
+                    .transformations(CircleCropTransformation())
+                    .build()
+            ),
             contentDescription = null,
             modifier = Modifier
                 .size(64.dp)
