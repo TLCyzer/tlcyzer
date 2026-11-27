@@ -47,18 +47,22 @@ impl BackgroundFitter {
         };
     }
 
+    /// Guess whether the spots are darker than the plate.
+    ///
+    /// Under 254 nm light an F254 plate glows green and the spots quench that
+    /// glow, so a plate dominated by green suggests dark spots.
+    ///
+    /// This used to compare the last bins of the green and blue cumulative
+    /// histograms. Those both equal the pixel count, so it returned true for
+    /// every image. Compare the channel totals instead.
     pub fn has_potential_dark_blobs(&self) -> bool {
         let rgb = self.input.to_rgb8();
 
-        let c_hist = imageproc::stats::cumulative_histogram(&rgb);
+        let (g_sum, b_sum) = rgb
+            .pixels()
+            .fold((0u64, 0u64), |(g, b), p| (g + p[1] as u64, b + p[2] as u64));
 
-        let g = c_hist.channels[1];
-        let b = c_hist.channels[2];
-
-        match (g.last(), b.last()) {
-            (Some(g_max), Some(b_max)) => g_max >= b_max,
-            (_, _) => true,
-        }
+        g_sum >= b_sum
     }
 
     pub fn remove_background(&self, blobs_dark: bool) -> Result<GrayImage, String> {
@@ -294,7 +298,7 @@ mod test {
         let when: Vec<f64> = perform_fit(&given_image);
 
         let then: Vec<f64> = given_image
-            .to_luma()
+            .to_luma8()
             .into_vec()
             .iter()
             .map(|x| *x as f64)
@@ -311,7 +315,7 @@ mod test {
         let when: Vec<f64> = perform_fit(&given_image);
 
         let then: Vec<f64> = given_image
-            .to_luma()
+            .to_luma8()
             .into_vec()
             .iter()
             .map(|x| *x as f64)
@@ -320,5 +324,19 @@ mod test {
         for i in 0..then.len() {
             assert_approx_eq!(when[i], then[i], 1f64);
         }
+    }
+
+    fn solid(pixel: [u8; 3]) -> BackgroundFitter {
+        let image = DynamicImage::ImageRgb8(image::RgbImage::from_pixel(32, 32, image::Rgb(pixel)));
+        BackgroundFitter::new(&image, String::new())
+    }
+
+    #[test]
+    fn test_dark_blobs_depends_on_image() {
+        // Green fluorescent plate (F254 under UV): spots are dark.
+        assert!(solid([0, 160, 80]).has_potential_dark_blobs());
+        // Blue dominated image: not dark spots. The old histogram comparison
+        // returned true here as well.
+        assert!(!solid([0, 80, 160]).has_potential_dark_blobs());
     }
 }
