@@ -294,7 +294,7 @@ mod test {
         let when: Vec<f64> = perform_fit(&given_image);
 
         let then: Vec<f64> = given_image
-            .to_luma()
+            .to_luma8()
             .into_vec()
             .iter()
             .map(|x| *x as f64)
@@ -311,7 +311,7 @@ mod test {
         let when: Vec<f64> = perform_fit(&given_image);
 
         let then: Vec<f64> = given_image
-            .to_luma()
+            .to_luma8()
             .into_vec()
             .iter()
             .map(|x| *x as f64)
