@@ -17,12 +17,16 @@ pub fn integrate_spots(
             let quad = circle.to_quad();
             let (qw, qh) = quad.dimensions();
             let (iw, ih) = image.dimensions();
+            // Keep the window inside the image: shrink it if it is larger than
+            // the image, then shift it back in if it crosses an edge.
+            let w = (qw as u32).min(iw);
+            let h = (qh as u32).min(ih);
             let mut scaled_img: Vec<u32> = image
                 .view(
-                    (quad.top_left.x as u32).clamp(0, qw as u32 - iw),
-                    (quad.top_right.y as u32).clamp(0, qh as u32 - ih),
-                    qw as u32,
-                    qh as u32,
+                    (quad.top_left.x as u32).clamp(0, iw - w),
+                    (quad.top_right.y as u32).clamp(0, ih - h),
+                    w,
+                    h,
                 )
                 .pixels()
                 .map(|(_, _, p)| p[0])
@@ -134,11 +138,14 @@ pub fn find_scaling(image: &GrayImage, blobs: &HashMap<u32, Circle>) -> (u8, u8)
     let bounding_box = find_bounding_box_from_blobs(width, height, blobs);
     let (bw, bh) = bounding_box.dimensions();
 
+    // Clip the strip to the image; a spot near an edge can extend past it.
+    let x = (bounding_box.top_left.x as u32).min(width);
+    let y = (bounding_box.top_right.y as u32).min(height);
     let img_strip = image.view(
-        bounding_box.top_left.x as u32,
-        bounding_box.top_right.y as u32,
-        bw as u32,
-        bh as u32,
+        x,
+        y,
+        (bw as u32).min(width - x),
+        (bh as u32).min(height - y),
     );
 
     img_strip
